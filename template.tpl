@@ -1,4 +1,4 @@
-﻿___INFO___
+___INFO___
 
 {
   "displayName": "Pulse Insights Code Snippet",
@@ -133,15 +133,17 @@ const injectScript = require('injectScript');
 const query = require('queryPermission');
 const set = require('setInWindow');
 const call = require('callInWindow');
+const createArgumentsQueue = require('createArgumentsQueue');
 
 log('data =', data);
 
 // PI stuff
 if (query('access_globals', 'readwrite', 'pi')) {
-  set('pi', function() {
+  const pi = createArgumentsQueue('pi', 'window');
+  pi('set', function() {
     ['pi'].commands = ['pi'].commands || [];
     ['pi'].commands.push(arguments);
-  }, true);  
+  });
 }
 
 const onSuccess = () => {
@@ -170,7 +172,7 @@ const account_identifier = data.accountIdentifier;
 if (query('access_globals', 'readwrite', 'pi')) {
   call('pi', 'identify', account_identifier);
   if (data.spaEnabled === true) {
-    call(['pi'], 'spa', false);
+    call('pi', 'spa', false);
   }
   call('pi', 'get', 'surveys');
 }
@@ -181,4 +183,4 @@ data.gtmOnSuccess();
 
 ___NOTES___
 
-Created on 8/21/2019, 9:57:42 AM
+Created on 8/28/2019, 5:15:42 PM
